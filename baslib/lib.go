@@ -15,6 +15,7 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/udhos/baslib/baslib/codepage"
 	"github.com/udhos/inkey/inkey"
 )
 
@@ -47,6 +48,7 @@ func Begin() {
 		log.Printf("baslib: %s=%s showAlert=%v", envAlert, envAlertValue, showAlert)
 		log.Printf("baslib: env var %s is empty, set it to non-empty to disable alerts", envAlert)
 	}
+	codepage.LoadCodepage()
 	stdin = newInkey()
 	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 	rndLast = rnd.Float64()

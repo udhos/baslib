@@ -13,7 +13,7 @@ var (
 	tableCodepageRev map[int]int
 )
 
-func init() {
+func LoadCodepage() {
 	loadCodepage437()
 }
 

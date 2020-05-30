@@ -6,7 +6,7 @@ import (
 
 func main() {
 	baslib.Begin()
-	baslib.Print("hello baslib")
-	baslib.Println()
+	baslib.Print("hello")
+	baslib.Println(" baslib")
 	baslib.End()
 }
