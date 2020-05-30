@@ -48,7 +48,7 @@ func Begin() {
 		log.Printf("baslib: %s=%s showAlert=%v", envAlert, envAlertValue, showAlert)
 		log.Printf("baslib: env var %s is empty, set it to non-empty to disable alerts", envAlert)
 	}
-	codepage.LoadCodepage()
+	codepage.LoadCodepage(showAlert)
 	stdin = newInkey()
 	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 	rndLast = rnd.Float64()

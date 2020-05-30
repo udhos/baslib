@@ -11,9 +11,11 @@ import (
 var (
 	tableCodepage    [256]int
 	tableCodepageRev map[int]int
+	verbose          bool
 )
 
-func LoadCodepage() {
+func LoadCodepage(logVerbose bool) {
+	verbose = logVerbose
 	loadCodepage437()
 }
 
@@ -58,7 +60,9 @@ func loadCodepage437() {
 }
 
 func loadCodepage(label, s string) {
-	log.Printf("loading codepage %s", label)
+	if verbose {
+		log.Printf("loading codepage %s", label)
+	}
 
 	buf := bytes.NewBufferString(s)
 
@@ -95,12 +99,14 @@ LOOP:
 		}
 	}
 
-	log.Printf("loading codepage %s: found %d symbols", label, len(tableCodepageRev))
+	if verbose {
+		log.Printf("loading codepage %s: found %d symbols", label, len(tableCodepageRev))
+	}
 }
 
 func loadOne(b, u int) {
 	uu := ByteToUnicode(b)
-	if uu == u {
+	if uu == u && u != 0 {
 		log.Printf("codepage.loadOne(): dup byte=%d unicode=%x", b, u)
 	}
 	tableCodepage[b] = u
