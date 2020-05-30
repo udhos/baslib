@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/udhos/baslib/file"
+	"github.com/udhos/baslib/baslib/file"
 )
 
 type fileInfo struct {

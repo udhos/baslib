@@ -1,4 +1,4 @@
-module github.com/udhos/baslib
+module github.com/udhos/baslib/baslib
 
 go 1.14
 

@@ -14,6 +14,7 @@ github.com/lucasb-eyer/go-colorful v1.0.2 h1:mCMFu6PgSozg9tDNMMK3g18oJBX7oYGrC09
 github.com/lucasb-eyer/go-colorful v1.0.2/go.mod h1:0MS4r+7BZKSJ5mw4/S5MPN+qHFF1fYclkSPilDOKW0s=
 github.com/mattn/go-runewidth v0.0.4 h1:2BvfKmzob6Bmd4YsL0zygOqfdFnK7GR4QL06Do4/p7Y=
 github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
+github.com/udhos/baslib v0.0.0-20200530192159-5a34f0811e97 h1:AiMqdM0jLrOBb+qz+OWWt2bsxlCtQ/+2EO6U4osBdbs=
 github.com/udhos/inkey v0.0.0-20190226220941-63d5361f87da h1:53rLrwjce2d2AQ8lEmno7n/qzJUgjrmWcw1he7+Ol9Q=
 github.com/udhos/inkey v0.0.0-20190226220941-63d5361f87da/go.mod h1:Pt290EPuuqWzOTqcenshzuWN0qGij9pU3Fc7OgKakzU=
 golang.org/x/sys v0.0.0-20190626150813-e07cf5db2756/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=

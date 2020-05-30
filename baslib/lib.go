@@ -27,12 +27,12 @@ type keyInput interface {
 }
 
 var (
-	stdin       = newInkey()                                      // INPUT
-	rnd         = rand.New(rand.NewSource(time.Now().UnixNano())) // RND
-	rndLast     = rnd.Float64()                                   // RND
-	readDataPos int                                               // READ-DATA cursor
-	screenPos   = 1                                               // PRINT COLUMN
-	screenRow   = 1                                               // PRINT ROW
+	stdin       keyInput   // INPUT
+	rnd         *rand.Rand // RND
+	rndLast     float64    // RND
+	readDataPos int        // READ-DATA cursor
+	screenPos   = 1        // PRINT COLUMN
+	screenRow   = 1        // PRINT ROW
 	showAlert   = true
 )
 
@@ -47,6 +47,9 @@ func Begin() {
 		log.Printf("baslib: %s=%s showAlert=%v", envAlert, envAlertValue, showAlert)
 		log.Printf("baslib: env var %s is empty, set it to non-empty to disable alerts", envAlert)
 	}
+	stdin = newInkey()
+	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
+	rndLast = rnd.Float64()
 }
 
 func newInkey() keyInput {
