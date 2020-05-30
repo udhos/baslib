@@ -19,7 +19,7 @@ import (
 	"github.com/udhos/inkey/inkey"
 )
 
-const baslibVersion = "0.8.0"
+const baslibVersion = "0.8.1"
 
 type keyInput interface {
 	Inkey() (byte, bool)
