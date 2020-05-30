@@ -7,6 +7,7 @@ require (
 	github.com/gdamore/tcell v1.3.0
 	github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7
 	github.com/go-gl/glfw v0.0.0-20200420212212-258d9bec320e
-	github.com/udhos/basgo v0.6.0
 	github.com/udhos/inkey v0.0.0-20190226220941-63d5361f87da
+	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
+	golang.org/x/text v0.3.2 // indirect
 )

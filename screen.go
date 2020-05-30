@@ -9,7 +9,7 @@ import (
 	"github.com/gdamore/tcell"
 	"github.com/udhos/inkey/inkey"
 
-	"github.com/udhos/basgo/baslib/codepage"
+	"github.com/udhos/baslib/codepage"
 )
 
 var (
