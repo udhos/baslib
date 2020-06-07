@@ -279,8 +279,12 @@ func MidNew(s string, begin, size int, value string) string {
 	if begin > len(s) {
 		return s
 	}
-	if size > len(s) {
-		size = len(s)
+	if begin < 1 {
+		begin = 1
+	}
+	remain := len(s) - begin + 1
+	if size > remain {
+		size = remain
 	}
 	if size > len(value) {
 		size = len(value)
@@ -289,10 +293,12 @@ func MidNew(s string, begin, size int, value string) string {
 		return s
 	}
 	begin--
-	if begin < 0 {
-		begin = 0
+	head := s[:begin] + value[:size]
+	tailBegin := begin + size
+	if tailBegin >= len(s) {
+		return head
 	}
-	return s[:begin] + value[:size] + s[begin+size:]
+	return head + s[tailBegin:]
 }
 
 func String(s string, count int) string {
