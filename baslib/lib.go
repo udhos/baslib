@@ -274,6 +274,26 @@ func Mid(s string, begin int) string {
 	return s[begin:]
 }
 
+// MID$(V$,BEGIN,SIZE)=VALUE$
+func MidNew(s string, begin, size int, value string) string {
+	if begin > len(s) {
+		return s
+	}
+	if size > len(s) {
+		size = len(s)
+	}
+	if size > len(value) {
+		size = len(value)
+	}
+	if size < 1 {
+		return s
+	}
+	if begin < 1 {
+		begin = 1
+	}
+	return s[:begin] + value[:size] + s[begin+size-1:]
+}
+
 func String(s string, count int) string {
 	if count < 0 {
 		alert("string repeat negative count")
