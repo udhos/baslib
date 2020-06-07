@@ -288,10 +288,11 @@ func MidNew(s string, begin, size int, value string) string {
 	if size < 1 {
 		return s
 	}
-	if begin < 1 {
-		begin = 1
+	begin--
+	if begin < 0 {
+		begin = 0
 	}
-	return s[:begin] + value[:size] + s[begin+size-1:]
+	return s[:begin] + value[:size] + s[begin+size:]
 }
 
 func String(s string, count int) string {
