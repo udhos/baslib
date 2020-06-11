@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/udhos/baslib/baslib/file"
 )
@@ -66,6 +67,27 @@ func hitEof(number int) bool {
 func isOpen(number int) bool {
 	_, found := fileTable[number]
 	return found
+}
+
+func OpenShort(name string, number int, mode string) {
+
+	var m int
+
+	switch strings.ToLower(mode) {
+	case "i":
+		m = file.OpenInput
+	case "o":
+		m = file.OpenOutput
+	case "a":
+		m = file.OpenAppend
+	case "r":
+		m = file.OpenRandom
+	default:
+		alert("OPEN %d: bad mode: %s", number, mode)
+		return
+	}
+
+	Open(name, number, m)
 }
 
 func Open(name string, number, mode int) {
