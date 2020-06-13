@@ -274,8 +274,14 @@ func Mid(s string, begin int) string {
 	return s[begin:]
 }
 
+// MID$(V$,BEGIN)=VALUE$
+func MidNew(s string, begin int, value string) string {
+	size := len(s) - begin + 1
+	return MidNewSize(s, begin, size, value)
+}
+
 // MID$(V$,BEGIN,SIZE)=VALUE$
-func MidNew(s string, begin, size int, value string) string {
+func MidNewSize(s string, begin, size int, value string) string {
 	if begin > len(s) {
 		return s
 	}
