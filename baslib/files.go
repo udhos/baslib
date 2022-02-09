@@ -3,20 +3,34 @@ package baslib
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
+
+	"go.bug.st/serial"
 
 	"github.com/udhos/baslib/baslib/file"
 )
 
 type fileInfo struct {
-	file   *os.File
-	reader *bufio.Reader
-	writer *bufio.Writer
-	number int
-	eof    bool
+	file       *os.File
+	reader     *bufio.Reader
+	writer     *bufio.Writer
+	number     int
+	eof        bool
+	serialPort *serialInfo
+}
+
+func (fi fileInfo) isSerial() bool {
+	return fi.serialPort != nil
+}
+
+type serialInfo struct {
+	portName string
+	port     serial.Port
 }
 
 var fileTable = map[int]fileInfo{}
@@ -41,6 +55,9 @@ func Lof(number int) int {
 		alert("LOF %d: file not open", number)
 		return 0
 	}
+	if i.isSerial() {
+		return i.reader.Size()
+	}
 	info, err := i.file.Stat()
 	if err != nil {
 		alert("LOF %d: %v", number, err)
@@ -53,6 +70,11 @@ func hitEof(number int) bool {
 	if !found {
 		alert("EOF %d: file not open", number)
 		return true
+	}
+	if i.isSerial() {
+		// FIXME: asynchronously copy from serial COMx to helper buf
+		//        report EOF if helper buf is empty
+		return false
 	}
 	if i.eof {
 		return true
@@ -90,10 +112,62 @@ func OpenShort(name string, number int, mode string) {
 	Open(name, number, m)
 }
 
+func openSerial(name string, number int) bool {
+
+	high := strings.ToUpper(name)
+
+	left := strings.TrimPrefix(high, "COM")
+	if len(left) == len(high) {
+		return false
+	}
+
+	split := strings.SplitN(left, ":", 2)
+	portNumberStr := split[0]
+	if len(split) > 1 {
+		left = split[1]
+	} else {
+		left = ""
+	}
+
+	portNumber, errConv := strconv.Atoi(portNumberStr)
+	if errConv != nil {
+		alert("OPEN %d: bad port number %s: %v", number, portNumberStr, errConv)
+		return true
+	}
+
+	portName := fmt.Sprintf("COM%d", portNumber)
+
+	alert("OPEN %d: port number %s: FIXME parse mode: [%s]", number, portName, left)
+
+	mode := &serial.Mode{}
+
+	port, errOpen := serial.Open(portName, mode)
+	if errOpen != nil {
+		alert("OPEN %d: port %s: %v", number, portName, errOpen)
+		return true
+	}
+
+	si := serialInfo{
+		portName: portName,
+		port:     port,
+	}
+
+	fileTable[number] = fileInfo{
+		serialPort: &si,
+		reader:     bufio.NewReader(si.port),
+	}
+
+	return true
+}
+
 func Open(name string, number, mode int) {
 
 	if isOpen(number) {
 		alert("OPEN %d: file already open", number)
+		return
+	}
+
+	if openSerial(name, number) {
 		return
 	}
 
@@ -147,8 +221,14 @@ func fileClose(i fileInfo) {
 			alert("CLOSE %d: flush: %v", i.number, errFlush)
 		}
 	}
-	if errClose := i.file.Close(); errClose != nil {
-		alert("CLOSE %d: %v", i.number, errClose)
+	if i.isSerial() {
+		if errClose := i.serialPort.port.Close(); errClose != nil {
+			alert("CLOSE %d: port %s: %v", i.number, i.serialPort.portName, errClose)
+		}
+	} else {
+		if errClose := i.file.Close(); errClose != nil {
+			alert("CLOSE %d: %v", i.number, errClose)
+		}
 	}
 	delete(fileTable, i.number)
 }
@@ -226,9 +306,16 @@ func FileInputCount(count, number int) string {
 		return ""
 	}
 
-	reader := getReader(number)
-	if reader == nil {
-		return ""
+	var reader *bufio.Reader
+
+	i, found := fileTable[number]
+	if found && i.isSerial() {
+		reader = i.reader
+	} else {
+		reader = getReader(number)
+		if reader == nil {
+			return ""
+		}
 	}
 
 	buf := make([]byte, count)
@@ -247,13 +334,19 @@ func FileInputCount(count, number int) string {
 	}
 
 	return string(buf[:n])
-
 }
 
 func FilePrint(number int, value string) {
 	i, found := fileTable[number]
 	if !found {
 		alert("PRINT# %d: file not open", number)
+		return
+	}
+	if i.isSerial() {
+		_, errWrite := i.serialPort.port.Write([]byte(value))
+		if errWrite != nil {
+			alert("PRINT# %d on port %s error: %v", number, i.serialPort.portName, errWrite)
+		}
 		return
 	}
 	if i.writer == nil {
